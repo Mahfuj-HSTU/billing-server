@@ -15,8 +15,13 @@ const uri = `mongodb+srv://${ process.env.DB_user }:${ process.env.DB_password }
 const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 } );
 
 async function run () {
+    const billsCollection = client.db( 'BillCalculation' ).collection( 'bills' )
     try {
-
+        app.post( '/bills', async ( req, res ) => {
+            const service = req.body;
+            const result = await billsCollection.insertOne( service );
+            res.json( result );
+        } );
     }
     finally {
 
