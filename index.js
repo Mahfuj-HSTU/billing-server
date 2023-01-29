@@ -16,11 +16,21 @@ const client = new MongoClient( uri, { useNewUrlParser: true, useUnifiedTopology
 
 async function run () {
     const billsCollection = client.db( 'BillCalculation' ).collection( 'bills' )
+
     try {
-        app.post( '/bills', async ( req, res ) => {
+        // post bills
+        app.post( '/api/add-billing', async ( req, res ) => {
             const service = req.body;
             const result = await billsCollection.insertOne( service );
             res.json( result );
+        } );
+
+        // get bills
+        app.get( '/api/billing-list', async ( req, res ) => {
+            const query = {}
+            const cursor = billsCollection.find( query );
+            const bills = await cursor.toArray();
+            res.send( bills );
         } );
     }
     finally {
